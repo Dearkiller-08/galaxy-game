@@ -1,5 +1,20 @@
+#:import menu menu
+
 MainWidget:
 
 <MainWidget>:
+    canvas.before:
+        Rectangle:
+            size: self.size
+            source: 'images/bg-galaxy.jpg'
+    menu_widget: menu_widget
     perspective_point_x: self.width / 2
     perspective_point_y: self.height * 0.75
+    MenuWidget:
+        id: menu_widget
+    Label:
+        text: root.score_text
+        font_size: dp(15)
+        font_name: 'fonts/SpecialGothicExpandedOne-Regular.ttf'
+        pos_hint: { "x": 0, "top": 1}
+        size_hint: .18, .18
