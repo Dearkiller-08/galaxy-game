@@ -19,11 +19,11 @@ class MainWidget(Widget):
     perspective_point_y = NumericProperty(0.0)
 
     V_NB_LINES = 8
-    V_LINES_SPACING = .4 # percentage in screen 
+    V_LINES_SPACING = .4
     vertical_lines = []
 
     H_NB_LINES = 8
-    H_LINES_SPACING = .15 # percentage in screen
+    H_LINES_SPACING = .15
     horizontal_lines = []
 
     SPEED = .5
