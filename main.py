@@ -1,4 +1,3 @@
-import random
 from kivy.config import Config
 Config.set('graphics', 'width', '900')
 Config.set('graphics', 'height', '400')
@@ -10,8 +9,13 @@ from kivy.graphics import Color, Line, Quad, Triangle
 from kivy.properties import Clock
 from kivy.core.window import Window
 import platform
+import random
+from kivy.lang import Builder
+from kivy.uix.relativelayout import RelativeLayout
 
-class MainWidget(Widget):
+Builder.load_file("menu.kv")
+
+class MainWidget(RelativeLayout):
     from transforms import transform, transform_2D, transform_perspective
     from user_actions import keyboard_closed, on_touch_down, on_touch_up, on_keyboard_down, on_keyboard_up
     
