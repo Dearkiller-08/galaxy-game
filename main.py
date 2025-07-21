@@ -285,7 +285,13 @@ class MainWidget(RelativeLayout):
         self.update_ship()
 
         if not self.state_game_over and self.state_game_has_started:
-            speed_y = self.SPEED * self.height / 100
+            speed_multiplier = 1.0
+            if self.current_y_loop >= 80:
+                speed_multiplier = 1.5
+            elif self.current_y_loop >= 25:
+                speed_multiplier = 1.2
+            
+            speed_y = self.SPEED * self.height / 100 * speed_multiplier
             self.current_offset_y += speed_y * time_factor
 
             spacing_y = self.H_LINES_SPACING * self.height
