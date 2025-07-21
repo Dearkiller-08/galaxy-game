@@ -14,6 +14,7 @@ from kivy.lang import Builder
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty, NumericProperty
+from kivy.core.audio import SoundLoader
 
 Builder.load_file("menu.kv")
 
@@ -58,8 +59,15 @@ class MainWidget(RelativeLayout):
     menu_button_title = StringProperty("START")
     score_text = StringProperty()
 
+    sound_background = None
+    sound_button = None
+    sound_ship_movement = None
+    sound_game_over = None
+    sound_game_begin = None
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
+        self.init_audio()
         self.init_vertical_lines()
         self.init_horizontal_lines()
         self.init_tiles()
@@ -73,7 +81,24 @@ class MainWidget(RelativeLayout):
             self._keyboard.bind(on_key_down=self.on_keyboard_down)
             self._keyboard.bind(on_key_up=self.on_keyboard_up)
         Clock.schedule_interval(self.update, 1.0 / 60.0)
-    
+
+        self.sound_game_begin.play()
+        self.sound_background.play()
+
+    def init_audio(self):
+        self.sound_background = SoundLoader.load('audio/audio-background-sound.wav')
+        self.sound_button = SoundLoader.load('audio/audio-button-effect.wav')
+        self.sound_ship_movement = SoundLoader.load('audio/audio-ship-mouvement.wav')
+        self.sound_game_over = SoundLoader.load('audio/audio-game-over.mp3')
+        self.sound_game_begin = SoundLoader.load('audio/audio-game-intro.mp3')
+
+        self.sound_background.volume = 0.50
+        self.sound_game_over.volume = 1
+        self.sound_game_begin.volume = 1
+        self.sound_button.volume = 1
+        self.sound_ship_movement.volume = 1
+        self.sound_background.loop = True
+
     def reset_game(self):
         self.current_offset_y = 0
         self.current_y_loop = 0
@@ -260,7 +285,13 @@ class MainWidget(RelativeLayout):
         self.update_ship()
 
         if not self.state_game_over and self.state_game_has_started:
-            speed_y = self.SPEED * self.height / 100
+            speed_multiplier = 1.0
+            if self.current_y_loop >= 80:
+                speed_multiplier = 1.5
+            elif self.current_y_loop >= 25:
+                speed_multiplier = 1.2
+            
+            speed_y = self.SPEED * self.height / 100 * speed_multiplier
             self.current_offset_y += speed_y * time_factor
 
             spacing_y = self.H_LINES_SPACING * self.height
@@ -278,9 +309,10 @@ class MainWidget(RelativeLayout):
             self.menu_title = "G  A  M  E     O  V  E  R"
             self.menu_button_title = "RESTART"
             self.menu_widget.opacity = 1
-            print("GAME OVER")
+            self.sound_game_over.play()
     
     def on_menu_button_pressed(self):
+        self.sound_button.play()
         self.reset_game()
         self.state_game_has_started = True
         self.menu_widget.opacity = 0
