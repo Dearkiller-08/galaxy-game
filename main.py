@@ -1,3 +1,7 @@
+import os
+import sys
+
+os.environ["KIVY_AUDIO"] = "sdl2"
 from kivy.config import Config
 Config.set('graphics', 'width', '900')
 Config.set('graphics', 'height', '400')
@@ -6,7 +10,7 @@ from kivy.app import App
 from kivy.properties import NumericProperty
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Line, Quad, Triangle
-from kivy.properties import Clock
+from kivy.clock import Clock
 from kivy.core.window import Window
 import platform
 import random
@@ -15,8 +19,20 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty, NumericProperty
 from kivy.core.audio import SoundLoader
+from kivy.resources import resource_add_path, resource_find
+import os
+import sys
 
-Builder.load_file("menu.kv")
+import menu
+import transforms
+import user_actions
+
+
+BASE_PATH = getattr(sys, "_MEIPASS", os.path.abspath(os.path.dirname(__file__)))
+for sub in ("", "images", "audio", "fonts"):
+    resource_add_path(os.path.join(BASE_PATH, sub))
+
+Builder.load_file(resource_find("menu.kv"))
 
 class MainWidget(RelativeLayout):
     from transforms import transform, transform_2D, transform_perspective
@@ -86,11 +102,11 @@ class MainWidget(RelativeLayout):
         self.sound_background.play()
 
     def init_audio(self):
-        self.sound_background = SoundLoader.load('audio/audio-background-sound.wav')
-        self.sound_button = SoundLoader.load('audio/audio-button-effect.wav')
-        self.sound_ship_movement = SoundLoader.load('audio/audio-ship-mouvement.wav')
-        self.sound_game_over = SoundLoader.load('audio/audio-game-over.mp3')
-        self.sound_game_begin = SoundLoader.load('audio/audio-game-intro.mp3')
+        self.sound_background = SoundLoader.load(resource_find('audio/audio-background-sound.wav'))
+        self.sound_button = SoundLoader.load(resource_find('audio/audio-button-effect.wav'))
+        self.sound_ship_movement = SoundLoader.load(resource_find('audio/audio-ship-mouvement.wav'))
+        self.sound_game_over = SoundLoader.load(resource_find('audio/audio-game-over.mp3'))
+        self.sound_game_begin = SoundLoader.load(resource_find('audio/audio-game-intro.mp3'))
 
         self.sound_background.volume = 0.50
         self.sound_game_over.volume = 1
